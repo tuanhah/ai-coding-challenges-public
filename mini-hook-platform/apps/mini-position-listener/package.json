@@ -1,0 +1,10 @@
+{
+  "name": "@mini-hook-platform/mini-position-listener",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Listener-only app: tracks LP position NFT ownership via mock Transfer events. No read API here (see README).",
+  "scripts": {
+    "ingest": "tsx src/index.ts"
+  }
+}

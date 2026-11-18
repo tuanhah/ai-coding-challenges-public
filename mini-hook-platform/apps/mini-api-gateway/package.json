@@ -1,0 +1,10 @@
+{
+  "name": "@mini-hook-platform/mini-api-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dumb-pipe edge layer: forwards requests 1:1 to the backend services by path prefix. Not a bounded context.",
+  "scripts": {
+    "dev": "tsx src/local-server.ts"
+  }
+}

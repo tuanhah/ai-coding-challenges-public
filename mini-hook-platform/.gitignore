@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/
+.next/
+cdk.out/
+*.cdk.context.json
+.env
+.env.local
+!.env.example
+data/*.json
+data/*.jsonl
+!data/.gitkeep
+*.log
+.DS_Store

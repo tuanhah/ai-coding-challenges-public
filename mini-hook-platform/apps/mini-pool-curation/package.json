@@ -1,0 +1,13 @@
+{
+  "name": "@mini-hook-platform/mini-pool-curation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Full bounded context: owns its own listener-equivalent submit flow, DB, read API and write API for pool curation (submit/approve/reject).",
+  "scripts": {
+    "dev": "tsx src/local-server.ts"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145"
+  }
+}

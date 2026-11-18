@@ -1,0 +1,13 @@
+{
+  "name": "@mini-hook-platform/mini-read-api-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read API for pool activity history + position ownership.",
+  "scripts": {
+    "dev": "tsx src/local-server.ts"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@mini-hook-platform/mini-pool-activity-listener",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Listener-only app: ingests mock Swap/Donate events into its own DB file. No read API here (see README for why that is the planted gap).",
+  "scripts": {
+    "ingest": "tsx src/index.ts"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "mini-hook-platform",
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "infra/*"
+  ],
+  "scripts": {
+    "seed": "tsx scripts/seed-demo-data.ts",
+    "build": "echo 'build each app independently, see README.md'"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "@types/node": "^22.9.0"
+  }
+}
