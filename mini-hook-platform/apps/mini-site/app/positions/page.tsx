@@ -1,54 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { isAddress } from "viem";
+import { useConnection } from "wagmi";
 import { getPositionsByOwner, type PositionOwnership } from "../../lib/api";
+import { PositionCard } from "./PositionCard";
+import { WalletBar } from "./WalletBar";
 
 // Valid 20-byte (40 hex char) EVM address — verified with viem's isAddress().
 const DEMO_OWNER = "0x00000000000000000000000000000000000000aa";
 
 export default function PositionsPage() {
+  const { address: connected } = useConnection();
   const [address, setAddress] = useState(DEMO_OWNER);
   const [positions, setPositions] = useState<PositionOwnership[]>([]);
   const [loaded, setLoaded] = useState(false);
 
-  async function load() {
-    const result = await getPositionsByOwner(address);
+  const load = useCallback(async (owner: string) => {
+    const result = await getPositionsByOwner(owner);
     setPositions(result);
     setLoaded(true);
-  }
+  }, []);
+
+  // Default the lookup to the connected wallet.
+  useEffect(() => {
+    if (connected) {
+      setAddress(connected);
+      void load(connected);
+    }
+  }, [connected, load]);
+
+  const valid = isAddress(address, { strict: false });
 
   return (
     <main>
       <h2>My Positions</h2>
+      <WalletBar />
       <div style={{ marginBottom: 16 }}>
         <input
+          data-testid="owner-address"
           value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          onChange={(e) => setAddress(e.target.value.trim())}
           style={{ width: 360, marginRight: 8 }}
         />
-        <button onClick={load}>Load positions</button>
+        <button data-testid="load-positions" disabled={!valid} onClick={() => load(address)}>
+          Load positions
+        </button>
+        {!valid && <span style={{ color: "#f28b82", fontSize: 12, marginLeft: 8 }}>Not an address</span>}
       </div>
 
-      {loaded && positions.length === 0 && <p>No positions for this address.</p>}
+      {loaded && positions.length === 0 && <p data-testid="no-positions">No positions for this address.</p>}
 
-      <ul>
+      <ul style={{ padding: 0 }}>
         {positions.map((p) => (
-          <li key={p.tokenId} style={{ marginBottom: 12, border: "1px solid #333", padding: 12 }}>
-            <div>Token #{p.tokenId} — pool {p.poolId}</div>
-            <div style={{ fontSize: 12, opacity: 0.7 }}>
-              last transfer: block {p.lastBlockNumber}, tx {p.lastTxHash}
-            </div>
-            {/*
-              TODO (Part A — candidate implements):
-              - fetch range (tickLower/tickUpper), live liquidity, in/out-of-range,
-                and accrued fees for this position and render them here.
-              - add a "Decrease liquidity / Withdraw" control that calls
-                MiniPositionNFT.decreaseLiquidity / collect / burn directly via
-                a wallet client (wagmi/viem), NOT through the backend.
-              Currently this view only has what mini-read-api-service's
-              ownership-only route returns.
-            */}
-          </li>
+          <PositionCard key={p.tokenId} position={p} onChanged={() => load(address)} />
         ))}
       </ul>
     </main>

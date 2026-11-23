@@ -25,7 +25,38 @@ export interface PositionOwnership {
   lastBlockNumber: number;
   lastTxHash: string;
   transferredAt: number;
-  // NOTE: no range/liquidity/fee fields yet — that is Part A's backend gap.
+}
+
+/** GET /positions/:tokenId/state — live on-chain state (Position service). */
+export interface PositionState {
+  tokenId: string;
+  owner: string;
+  poolId: string;
+  tickLower: number;
+  tickUpper: number;
+  /** uint128 as a decimal string */
+  liquidity: string;
+  currentTick: number;
+  inRange: boolean;
+  uncollectedFees: { token0: string; token1: string };
+  blockNumber: string;
+  chainId: number;
+  contractAddress: string;
+}
+
+export type PositionStateResult =
+  | { ok: true; state: PositionState }
+  | { ok: false; status: number; error: string };
+
+export async function getPositionState(tokenId: string): Promise<PositionStateResult> {
+  try {
+    const res = await fetch(`${GATEWAY_URL}/positions/${encodeURIComponent(tokenId)}/state`, { cache: "no-store" });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return { ok: false, status: res.status, error: data.error ?? `HTTP ${res.status}` };
+    return { ok: true, state: data as PositionState };
+  } catch (err) {
+    return { ok: false, status: 0, error: err instanceof Error ? err.message : String(err) };
+  }
 }
 
 export interface Curation {

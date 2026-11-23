@@ -1,3 +1,5 @@
+import { Providers } from "./providers";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -10,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <a href="/curation" style={{ color: "#8ab4f8" }}>Curation</a>
           </nav>
         </header>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
