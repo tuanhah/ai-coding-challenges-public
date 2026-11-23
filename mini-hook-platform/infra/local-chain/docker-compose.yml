@@ -1,0 +1,30 @@
+# Local EVM chain for mini-hook-platform: a single geth node in --dev mode.
+#
+#   docker compose -f infra/local-chain/docker-compose.yml up -d
+#
+# --dev gives a chain with chainId 1337 and ONE pre-funded developer account,
+# unlocked inside the node, so local scripts send transactions through plain
+# JSON-RPC (eth_sendTransaction) and nothing in this repo ever handles a
+# private key. That dev account is geth's well-known deterministic one
+# (0x71562b71999873DB5b286dF957af199Ec94617F7): its key is public, so never
+# use it outside a throwaway local chain. Because the account is unlocked,
+# the RPC port is bound to 127.0.0.1 only; do not expose it to a network.
+#
+# State is in-memory: `docker compose down` (or a restart) wipes the chain,
+# so re-run the deploy + mint scripts afterwards.
+services:
+  geth:
+    image: ethereum/client-go:v1.17.9
+    container_name: mini-hook-geth
+    command:
+      - --dev
+      - --dev.period=0 # mine a block as soon as a transaction arrives
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.port=8545
+      - --http.api=eth,net,web3
+      - --http.corsdomain=* # lets a browser wallet / dapp on localhost talk to it
+      - --http.vhosts=*
+      - --verbosity=2
+    ports:
+      - "127.0.0.1:8545:8545"

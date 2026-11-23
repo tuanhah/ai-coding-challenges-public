@@ -3,8 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Listener-only app: tracks LP position NFT ownership via mock Transfer events. No read API here (see README).",
+  "description": "Position context: tracks LP position NFT ownership (listener) and serves the live on-chain state of a position (GET /positions/:tokenId/state).",
   "scripts": {
-    "ingest": "tsx src/index.ts"
+    "ingest": "tsx src/index.ts",
+    "ingest:chain": "tsx src/index-chain.ts",
+    "dev": "tsx src/local-server.ts",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@mini-hook-platform/mini-contracts-mock": "*",
+    "viem": "2.57.14"
   }
 }

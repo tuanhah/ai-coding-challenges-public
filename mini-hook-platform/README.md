@@ -57,6 +57,36 @@ cd apps/mini-site && npm install && npm run dev   # :3000
 
 Visit `http://localhost:3000`.
 
+## Part A: live position state + withdraw (local chain)
+
+Needs Docker for the local chain. No private key is involved anywhere: geth
+`--dev` signs deploy/mint with its own unlocked dev account.
+
+```bash
+# chain (geth --dev, chainId 1337, RPC 127.0.0.1:8545)
+docker compose -f infra/local-chain/docker-compose.yml up -d
+
+# contract: compile, deploy, mint demo positions (to your wallet + gas ETH)
+npm run build  -w packages/mini-contracts-mock
+npm run deploy -w packages/mini-contracts-mock          # prints the address
+export MINI_POSITION_NFT_ADDRESS=0x...                   # printed above
+MINI_DEMO_OWNER=0xYourWallet MINI_DEMO_FUND_ETH=10 npm run mint:demo -w packages/mini-contracts-mock
+
+# position listener (real Transfer logs) + position service (:4003)
+(cd apps/mini-position-listener && npm run ingest:chain -- --watch) &
+(cd apps/mini-position-listener && npm run dev) &
+
+# then steps 1, 3, 4 above (skip the mock `npm run ingest` for positions), with
+NEXT_PUBLIC_POSITION_NFT_ADDRESS=$MINI_POSITION_NFT_ADDRESS npm run dev -w apps/mini-site
+```
+
+In MetaMask add network `http://localhost:8545` / chain id `1337`, open
+`/positions`, connect, and use "Decrease liquidity / Withdraw" (calls the
+contract directly from the browser). Tests:
+`npm test -w apps/mini-position-listener` (add
+`MINI_IT_CHAIN_RPC_URL=http://localhost:8545` for the live-chain test) and
+`npm test -w packages/mini-contracts-mock`.
+
 ## CDK (infra/cdk-mini)
 
 ```bash

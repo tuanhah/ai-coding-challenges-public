@@ -2,9 +2,20 @@
   "name": "@mini-hook-platform/mini-contracts-mock",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Minimal self-written Solidity mock of an LP-position NFT (NOT Uniswap code). Used by mini-site to demo direct contract calls for withdraw.",
+  "exports": {
+    "./abi": "./src/abi.ts",
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "build": "node scripts/compile.js"
+    "build": "node scripts/compile.cjs",
+    "deploy": "tsx scripts/deploy.ts",
+    "mint:demo": "tsx scripts/mint-demo.ts",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "viem": "2.57.14"
   },
   "devDependencies": {
     "solc": "^0.8.26"
